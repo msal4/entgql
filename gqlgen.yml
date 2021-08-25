@@ -1,0 +1,31 @@
+schema:
+  - schema.graphql 
+  - ent.graphql 
+
+exec:
+  filename: server/generated/generated.go
+  package: generated
+
+model:
+  filename: server/model/models_gen.go
+  package: model
+
+resolver:
+  layout: follow-schema
+  dir: server
+  package: server
+  filename_template: "{name}.resolvers.go"
+
+autobind:
+  - github.com/msal4/hassah_school_server/ent
+
+models:
+  ID:
+    model:
+      - github.com/msal4/hassah_school_server/ent/schema/uuidgql.UUID 
+  Duration:
+    model:
+      - github.com/msal4/hassah_school_server/ent/schema/durationgql.Duration
+  Node:
+    model:
+      - github.com/msal4/hassah_school_server/ent.Noder

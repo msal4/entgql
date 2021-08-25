@@ -1,0 +1,433 @@
+scalar Cursor
+scalar Time
+scalar Upload
+scalar Duration
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: Cursor
+  endCursor: Cursor
+}
+
+enum State {
+  PRESENT
+  ABSENT
+  EXCUSED_ABSENT
+  SICK
+}
+
+enum Role {
+  SUPER_ADMIN
+  SCHOOL_ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum GroupType {
+  PRIVATE
+  SHARED
+}
+
+enum OrderDirection {
+    ASC
+    DESC
+}
+
+enum SchoolOrderField {
+    NAME
+    CREATED_AT
+    UPDATED_AT
+}
+
+input SchoolOrder {
+    field: SchoolOrderField
+    direction: OrderDirection!
+}
+
+type School implements Node {
+  id: ID!
+  active: Boolean!
+  name: String!
+  image: String
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type SchoolEdge {
+  node: School
+  cursor: Cursor!
+}
+
+type SchoolConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [SchoolEdge]
+}
+
+input AddSchoolInput {
+  name: String!
+  image: Upload!
+  active: Boolean! = true
+}
+
+input UpdateSchoolInput {
+  name: String
+  image: Upload
+  active: Boolean
+}
+
+enum UserOrderField {
+    NAME
+    USERNAME
+    PHONE
+    ROLE
+    CREATED_AT
+    UPDATED_AT
+}
+
+input UserOrder {
+    field: UserOrderField
+    direction: OrderDirection!
+}
+
+type User implements Node {
+  id: ID!
+  name: String!
+  username: String!
+  phone: String!
+  image: String!
+  role: Role!
+  active: Boolean!
+  school: School
+  stage: Stage
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type UserEdge {
+  node: User
+  cursor: Cursor!
+}
+
+type UserConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [UserEdge]
+}
+
+input AddUserInput {
+  name: String!
+  username: String!
+  password: String!
+  phone: String!
+  image: Upload
+  role: Role! = STUDENT
+  active: Boolean! = true
+  schoolID: ID
+  stageID: ID
+}
+
+input UpdateUserInput {
+  name: String
+  username: String
+  password: String
+  phone: String
+  image: Upload
+  active: Boolean
+  stageID: ID
+}
+
+type Stage implements Node {
+  id: ID!
+  name: String!
+  tuitionAmount: Int!
+  active: Boolean!
+  school: School!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+enum StageOrderField {
+    NAME
+    CREATED_AT
+    UPDATED_AT
+}
+
+input StageOrder {
+    field: StageOrderField
+    direction: OrderDirection!
+}
+
+type StageEdge {
+  node: Stage
+  cursor: Cursor!
+}
+
+type StageConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [StageEdge]
+}
+
+input AddStageInput {
+  name: String!
+  active: Boolean! = true
+  tuitionAmount: Int!
+  schoolID: ID!
+}
+
+input UpdateStageInput {
+  name: String
+  active: Boolean
+  tuitionAmount: Int
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+type AuthData {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Group {
+  id: ID!
+  name: String!
+  groupType: GroupType!
+  active: Boolean!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+enum GroupOrderField {
+    NAME
+    CREATED_AT
+    UPDATED_AT
+}
+
+input GroupOrder {
+    field: GroupOrderField
+    direction: OrderDirection!
+}
+
+type GroupEdge {
+  node: Group
+  cursor: Cursor!
+}
+
+type GroupConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [GroupEdge]
+}
+
+
+input AddGroupInput {
+  name: String!
+  active: Boolean! = true
+  userID: ID!
+}
+
+input UpdateGroupInput {
+  name: String
+  active: Boolean
+}
+
+type Class {
+  id: ID!
+  name: String!
+  active: Boolean!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+enum ClassOrderField {
+    NAME
+    CREATED_AT
+    UPDATED_AT
+}
+
+input ClassOrder {
+    field: ClassOrderField
+    direction: OrderDirection!
+}
+
+type ClassEdge {
+  node: Class
+  cursor: Cursor!
+}
+
+type ClassConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [ClassEdge]
+}
+
+
+input AddClassInput {
+  name: String!
+  active: Boolean! = true
+  teacherID: ID!
+  stageID: ID!
+}
+
+input UpdateClassInput {
+  name: String
+  active: Boolean
+  teacherID: ID
+}
+
+type Message {
+  id: ID!
+  content: String!
+  attachment: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+enum MessageOrderField {
+    CREATED_AT
+    UPDATED_AT
+}
+
+input MessageOrder {
+    field: MessageOrderField
+    direction: OrderDirection!
+}
+
+type MessageEdge {
+  node: Message
+  cursor: Cursor!
+}
+
+type MessageConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [MessageEdge]
+}
+
+input PostMessageInput {
+  groupID: ID!
+  content: String!
+  attachment: Upload
+}
+
+type Assignment {
+  id: ID!
+  name: String!
+  active: Boolean!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+enum AssignmentOrderField {
+    NAME
+    DESCRIPTION
+    DUE_DATE
+    DURATION
+    CREATED_AT
+    UPDATED_AT
+}
+
+input AssignmentOrder {
+    field: AssignmentOrderField
+    direction: OrderDirection!
+}
+
+type AssignmentEdge {
+  node: Assignment
+  cursor: Cursor!
+}
+
+type AssignmentConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [AssignmentEdge]
+}
+
+
+input AddAssignmentInput {
+  name: String!
+  description: String
+  file: Upload
+  classID: ID!
+  dueDate: Time!
+  isExam: Boolean! = false
+  duration: Duration
+}
+
+input UpdateAssignmentInput {
+  name: String
+  description: String
+  file: Upload
+  dueDate: Time
+  duration: Duration
+}
+
+type Query {
+  school(id: ID!): School
+  schools(after: Cursor, first: Int, before: Cursor, last: Int, orderBy: SchoolOrder, where: SchoolWhereInput): SchoolConnection
+
+  user(id: ID!): User
+  users(after: Cursor, first: Int, before: Cursor, last: Int, orderBy: UserOrder, where: UserWhereInput): UserConnection
+
+  stage(id: ID!): Stage
+  stages(after: Cursor, first: Int, before: Cursor, last: Int, orderBy: StageOrder, where: StageWhereInput): StageConnection
+
+  messages(groupID: ID!, after: Cursor, first: Int, before: Cursor, last: Int, orderBy: MessageOrder, where: MessageWhereInput): MessageConnection
+
+  group(id: ID!): Group
+  groups(userID: ID, after: Cursor, first: Int, before: Cursor, last: Int, orderBy: GroupOrder, where: GroupWhereInput): GroupConnection
+
+  class(id: ID!): Class
+  classes(userID: ID, stageID: ID, schoolID: ID, after: Cursor, first: Int, before: Cursor, last: Int, orderBy: ClassOrder, where: ClassWhereInput): ClassConnection
+
+  assignment(id: ID!): Assignment
+  assignments(userID: ID, stageID: ID, schoolID: ID, after: Cursor, first: Int, before: Cursor, last: Int, orderBy: AssignmentOrder, where: AssignmentWhereInput): AssignmentConnection
+}
+
+type Mutation {
+  addSchool(input: AddSchoolInput!): School
+  updateSchool(id: ID!, input: UpdateSchoolInput!): School
+  deleteSchool(id: ID!): Boolean!
+  deleteSchoolPermanently(id: ID!): Boolean!
+
+  addUser(input: AddUserInput!): User
+  updateUser(id: ID!, input: UpdateUserInput!): User
+  deleteUser(id: ID!): Boolean!
+  deleteUserPermanently(id: ID!): Boolean!
+
+  addStage(input: AddStageInput!): Stage
+  updateStage(id: ID!, input: UpdateStageInput!): Stage
+  deleteStage(id: ID!): Boolean!
+  deleteStagePermanently(id: ID!): Boolean!
+
+  loginAdmin(input: LoginInput!): AuthData
+  loginUser(input: LoginInput!): AuthData
+  refreshTokens(token: String!): AuthData
+
+  postMessage(input: PostMessageInput!): Message
+
+  addGroup(input: AddGroupInput!): Group
+  updateGroup(id: ID!, input: UpdateGroupInput!): Group
+  deleteGroup(id: ID!): Boolean!
+
+  addClass(input: AddClassInput!): Class
+  updateClass(id: ID!, input: UpdateClassInput!): Class
+  deleteClass(id: ID!): Boolean!
+
+  addAssignment(input: AddAssignmentInput!): Assignment
+  updateAssignment(id: ID!, input: UpdateAssignmentInput!): Assignment
+  deleteAssignment(id: ID!): Boolean!
+}
+
+type Subscription {
+  messagePosted(groupID: ID!): Message!
+}
